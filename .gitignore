@@ -7,3 +7,6 @@ __pycache__/
 
 # Ignore macOS clutter
 .DS_Store
+
+# Ignore editor settings
+.vscode/
