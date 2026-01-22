@@ -1,4 +1,5 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends, HTTPException
+from utils.database import get_db_connection
 
 # Initialize the app
 app = FastAPI(
@@ -18,3 +19,14 @@ def get_fake_stalls():
         {"id": 1, "name": "Taipei Main Station Exit M3", "status": "Available"},
         {"id": 2, "name": "Zhongshan Park Entrance", "status": "Booked"}        
     ]
+
+@app.get("/stalls")
+def get_stalls( conn = Depends(get_db_connection) ):
+    try:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM stalls;")
+        stalls = cursor.fetchall()
+        cursor.close()
+        return stalls
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching stalls: {e}")
