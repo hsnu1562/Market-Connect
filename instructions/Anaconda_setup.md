@@ -15,13 +15,14 @@ It allows you to create different coding environment for different projects, pre
 
 1.  go to the link [anaconda.com][anaconda_link], scroll to the bottom to find "miniconda installer", click on the download button
 
-2.  after installing the installer, execute the installer by double-clicking it.
+2.  after installing the installer, execute the installer by double-clicking it. and agree all the terms, also DO THE INITALIZE SETUP
 
-3.  ```
+3.  open Anaconda Prompt, and run this line to make conda commands executable in command shell
+    ```
     conda init shell
     ```
 
-3.  test the conda commands by typing
+3.  test the conda commands by typing the command in command shell
     ```
     conda --version
     ```
