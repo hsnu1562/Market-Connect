@@ -5,7 +5,7 @@ make it easier to find available spots for marketing
 please make sure you set up a new environment for this project, so it won't be mixed up with your default system environment.
 for more information, please read the instruction [Anaconda set up][Anaconda_set_up_link]
 
-after setting up the environment, make sure to install the following resource packs IN THE PROJECT ENVIRONMENT with the command lines respectively
+after setting up the environment, make sure to install the following resource packs *IN THE PROJECT ENVIRONMENT* with the command lines respectively
 
 - python 3.11.3 (you should already have this installed when setting up the environment)
 - psycopg2
