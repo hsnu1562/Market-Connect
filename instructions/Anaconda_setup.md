@@ -17,6 +17,10 @@ It allows you to create different coding environment for different projects, pre
 
 2.  after installing the installer, execute the installer by double-clicking it.
 
+3.  ```
+    conda init shell
+    ```
+
 3.  test the conda commands by typing
     ```
     conda --version
