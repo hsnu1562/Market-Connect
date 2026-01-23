@@ -91,3 +91,24 @@ def book_stall( request: BookingRequest, conn = Depends(get_db_connection) ):
     
     finally:
         cursor.close()
+
+@app.get("/availability")
+def get_availability( conn = Depends(get_db_connection) ):
+    try:
+        cursor = conn.cursor()
+
+        query = """
+        SELECT 
+            a.slot_id, 
+            a.date,
+            a.price
+        FROM availability a
+        JOIN stalls s ON a.stall_id = s.stall_id
+        WHERE a.status = 0;
+        """
+        cursor.execute(query)
+        slots = cursor.fetchall()
+        cursor.close()
+        return slots
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching availability: {e}")
