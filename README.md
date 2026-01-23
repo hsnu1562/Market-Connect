@@ -20,3 +20,8 @@ The following instructions of this README will assume you have already installed
 3.  you can now test out all the API routes. 
     for example: you want to test the function `/test-stalls`, simply find the function on the page, click it, then click "try it out", then click "execute".
     you should see the results below the "execute" button.
+
+## structure of the database:
+please read the instruction [Tables.md][Tables_link]
+
+[Tables_link]: ./instructions/Tables.md
