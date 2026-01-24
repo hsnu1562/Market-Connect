@@ -1,5 +1,5 @@
 # Workflow
-please follow the workflow to ensure the commit tree is clean, and it's easier to find older version of the program
+please follow the workflow to ensure the commit tree is clean, and so that your progress won't be lost in the commit tree
 
 ## environment setup (one time only)
 
