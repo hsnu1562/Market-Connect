@@ -77,7 +77,7 @@ It allows you to create different coding environment for different projects, pre
     [PSQL_link]:https://www.postgresql.org/download/windows/
 
     for mac:
-    ```s
+    ```bash
     brew install libpq
 
     # For Intel Macs
