@@ -7,10 +7,6 @@ class SlotStatus(Enum):
     AVAILABLE = 0
     BOOKED = 2
 
-class BookingRequest(BaseModel):
-    slot_id: int
-    user_id: int
-
 # Initialize the app
 app = FastAPI(
     title="Market Connect API",
@@ -30,7 +26,18 @@ def get_fake_stalls():
         {"id": 2, "name": "Zhongshan Park Entrance", "status": "Booked"}        
     ]
 
-@app.get("/stalls")
+@app.get("/get_users")
+def get_users( conn = Depends(get_db_connection) ):
+    try:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM users;")
+        users = cursor.fetchall()
+        cursor.close()
+        return users
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching users: {e}")
+
+@app.get("/get_stalls")
 def get_stalls( conn = Depends(get_db_connection) ):
     try:
         cursor = conn.cursor()
@@ -41,6 +48,31 @@ def get_stalls( conn = Depends(get_db_connection) ):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching stalls: {e}")
 
+@app.get("/get_availability")
+def get_availability( conn = Depends(get_db_connection) ):
+    try:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM availability;")
+        availability = cursor.fetchall()
+        cursor.close()
+        return availability
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching availability: {e}")
+
+@app.get("/get_bookings")
+def get_bookings( conn = Depends(get_db_connection) ):
+    try:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM bookings;")
+        bookings = cursor.fetchall()
+        cursor.close()
+        return bookings
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching bookings: {e}")
+
+class BookingRequest(BaseModel):
+    slot_id: int
+    user_id: int
 @app.post("/book")
 def book_stall( request: BookingRequest, conn = Depends(get_db_connection) ):
     cursor = conn.cursor()
@@ -92,8 +124,9 @@ def book_stall( request: BookingRequest, conn = Depends(get_db_connection) ):
     finally:
         cursor.close()
 
-@app.get("/availability")
-def get_availability( conn = Depends(get_db_connection) ):
+
+@app.get("/available_slots")
+def get_available_slots( conn = Depends(get_db_connection) ):
     try:
         cursor = conn.cursor()
 
@@ -112,13 +145,14 @@ def get_availability( conn = Depends(get_db_connection) ):
         cursor.close()
         return slots
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error fetching availability: {e}")
+        raise HTTPException(status_code=500, detail=f"Error fetching available slots: {e}")
     
+
+
 
 class CreateUserRequest(BaseModel):
     line_uid: str
     name: str
-
 @app.post("/create_user")
 def create_user( user: CreateUserRequest, conn = Depends(get_db_connection) ):
     cursor = conn.cursor()
@@ -143,5 +177,35 @@ def create_user( user: CreateUserRequest, conn = Depends(get_db_connection) ):
     except Exception as e:
         conn.rollback()
         raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        cursor.close()
+
+class DeleteUserRequest(BaseModel):
+    user_id: int
+@app.post("/delete_user")
+def delete_user( request: DeleteUserRequest, conn = Depends(get_db_connection) ):
+    cursor = conn.cursor()
+    try:
+        cursor.execute(
+            "DELETE FROM users WHERE user_id = %s;",
+            (request.user_id,)
+        )
+        if cursor.rowcount == 0:
+            conn.rollback()
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        conn.commit()
+        return {
+            "status": "success",
+            "message": "User deleted successfully!"
+        }
+    except Exception as e:
+        conn.rollback() # If any error happens, undo everything
+        # If it's already an HTTPException (like 409 or 404), re-raise it
+        if isinstance(e, HTTPException):
+            raise e
+        # Otherwise, it's a server error
+        raise HTTPException(status_code=500, detail=str(e))
+    
     finally:
         cursor.close()
