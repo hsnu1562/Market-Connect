@@ -1,61 +1,118 @@
-# Workflow
-please follow the workflow to ensure the commit tree is clean, and so that your progress won't be lost in the commit tree
+# 📜 Market Connect: Git Command Cheat Sheet
 
-## environment setup (one time only)
+### 🟢 1. First Time Setup (Do this once)
 
-### 1. Fork the repo on GitHub website first!
+*Goal: Connect your laptop to your personal fork (Origin) and the team repo (Upstream).*
 
-### 2. Clone YOUR personal fork
+1. **Fork** the main repository on GitHub to your own account.
+2. **Clone** your personal fork to your computer:
 ```bash
-git clone git@github.com:YOUR_USERNAME/market-connect-api.git
-```
-
-### 3. Enter folder
-```bash
+git clone https://github.com/YOUR_USERNAME/market-connect-api.git
 cd market-connect-api
+
 ```
 
-### 4. Link to the "Holy Grail" (The main repo where the team collaborates)
+3. **Add the Team Repo** as "Upstream":
 ```bash
-git remote add upstream git@github.com:USERNAME/market-connect-api.git
-```
+# Replace TEAM_URL with the link to the main project repo
+git remote add upstream https://github.com/TEAM_ORG/market-connect-api.git
 
-### 5. Prevent accidents (Make it impossible to push to upstream directly)
-```bash
+# Prevent accidental direct pushes to the main repo
 git remote set-url --push upstream no_push
 ```
 
-## daily development
-### 1. Update your Local Main (Get latest changes from friends)
+4. **Configure Rebase Behavior** (Saves headaches later):
+```bash
+git config pull.rebase true
+```
+---
+
+### 🟡 2. Starting a New Task (The "Morning" Routine)
+
+*Goal: Make sure you are starting from the freshest code.*
+
+1. **Go to main and sync with the team:**
 ```bash
 git checkout main
-git fetch upstream          # Download latest info from Holy Grail
-git rebase upstream/main    # Move your local main to match Holy Grail perfectly
+git fetch upstream
+git rebase upstream/main
 ```
 
-### 2. Create a Branch for your work
+*(Translation: "Download the team's latest work and update my local main to match exactly.")*
+2. **Create your feature branch:**
 ```bash
+# Naming convention: feature/name-of-task or fix/bug-name
 git checkout -b feature/booking-logic
 ```
+---
 
-### 3. Work, Work, Work...
+### 🟠 3. Doing the Work (The "Coding" Loop)
+
+*Goal: Save your progress locally.*
+
+1. **Code, code, code...**
+2. **Stage your files:**
 ```bash
 git add .
-git commit -m "COMMIT MESSAGE"
-# remember to type the commit message: a brief explanation about what you changed
 ```
 
-### 4. The "Safety Check" (Crucial!)
-Before you share your work, check if anyone else updated the Holy Grail while you were working.
+3. **Commit (Save snapshot):**
+```bash
+git commit -m "Add booking logic to database.py"
+```
+---
+
+### 🔵 4. Sharing Your Work (The "End of Day" Routine)
+
+*Goal: Update your branch with any new changes from the team, then push.*
+
+1. **The "Safety Sync" (CRITICAL STEP):**
+*Before you push, check if friends added code while you were working.*
 ```bash
 git fetch upstream
 git rebase upstream/main
 ```
 
-### 5. Push to YOUR playground (Origin)
-If you rebased in step 4, you might need -f, but usually first push is fine.
+* *If no conflicts:* Great! Move to step 2.
+* *If conflicts:* See the "red zone" below.
+
+2. **Push to YOUR fork:**
 ```bash
 git push origin feature/booking-logic
-# DO NOT PULL!!!
-# add -f if the push didn't work
 ```
+
+*(Note: If you rebased in step 1 and had previously pushed this branch, you might need to use `git push -f origin feature/booking-logic`)*.
+3. **Create Pull Request:**
+Go to GitHub and click **"Compare & Pull Request"**.
+
+---
+
+### 🔴 5. The Rescue Zone (When Rebase Fails)
+
+*Scenario: You tried to rebase, and Git screams "CONFLICT".*
+
+Don't panic. This just means you and a friend edited the same line of code.
+
+1. **VS Code is your friend:**
+Open the files that are red in your file explorer.
+Look for `<<<<<<< HEAD` and `>>>>>>> upstream/main`.
+Choose **"Accept Current Change"** (Yours) or **"Accept Incoming Change"** (Theirs), or edit it manually to combine both.
+2. **Continue the rebase:**
+Once you fixed the files and saved them:
+```bash
+git add .
+git rebase --continue
+
+```
+
+3. **Still stuck? Abort!**
+If it's too messy and you want to go back to how it was before you started rebasing:
+```bash
+git rebase --abort
+
+```
+---
+
+### One Final Golden Rule for your Team
+
+**Never work directly on the `main` branch.**
