@@ -5,6 +5,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from utils.database import get_db_connection
+from tabulate import tabulate
+from fastapi.responses import PlainTextResponse
 
 router = APIRouter()
 
@@ -18,7 +20,32 @@ def get_users( conn = Depends(get_db_connection) ):
         return users
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching users: {e}")
+
+@router.get("/get_users/table", response_class=PlainTextResponse)
+def get_users_table(conn = Depends(get_db_connection)):
+    """
+    Returns a table of all users.
+    Best viewed in a browser or terminal.
+    """
+    try:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM users;")
+        users = cursor.fetchall()
     
+        # Check if empty to avoid errors
+        if not users:
+            return "No users found."
+
+        # Convert the list of dictionaries into the table format
+        # tablefmt="psql" gives you that specific postgres style you asked for
+        table_content = tabulate(users, headers="keys", tablefmt="psql")
+        
+        return table_content
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching users: {e}")
+    finally:
+        cursor.close()
+
 class CreateUserRequest(BaseModel):
     line_uid: str
     name: str
