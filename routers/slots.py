@@ -19,8 +19,8 @@ class CreateSlotsRequest(BaseModel):
     stall_id: int
     date: str
     price: int
-@router.post("/create_slots")
-def create_slots( request: CreateSlotsRequest, conn = Depends(get_db_connection) ):
+@router.post("/create_slot")
+def create_slot( request: CreateSlotsRequest, conn = Depends(get_db_connection) ):
     cursor = conn.cursor()
     try:
         cursor.execute(
@@ -50,8 +50,8 @@ def create_slots( request: CreateSlotsRequest, conn = Depends(get_db_connection)
 
 class DeleteSlotsRequest(BaseModel):
     slot_id: int
-@router.post("/delete_slots")
-def delete_slots( request: DeleteSlotsRequest, conn = Depends(get_db_connection) ):
+@router.post("/delete_slot")
+def delete_slot( request: DeleteSlotsRequest, conn = Depends(get_db_connection) ):
     cursor = conn.cursor()
     try:
         cursor.execute(
@@ -60,12 +60,12 @@ def delete_slots( request: DeleteSlotsRequest, conn = Depends(get_db_connection)
         )
         if cursor.rowcount == 0:
             conn.rollback()
-            raise HTTPException(status_code=404, detail="Slots slot not found")
+            raise HTTPException(status_code=404, detail="Slot not found")
         
         conn.commit()
         return {
             "status": "success",
-            "message": "Slots slot deleted successfully!"
+            "message": "Slot deleted successfully!"
         }
     except Exception as e:
         conn.rollback()
