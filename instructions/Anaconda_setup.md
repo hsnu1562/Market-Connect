@@ -55,7 +55,7 @@ It allows you to create different coding environment for different projects, pre
     ```
     you should now see `(Python3_11_3)` instead of `(base)` in the front of your command line, which means you are now in the project environment.
 
-2. install the following packages:
+2. make sure you have installed the following packages:
 
 ### python 3.11.3 
 you should already have this installed when creating the environment
@@ -69,9 +69,19 @@ pip install python-dotenv
 ```
 ### fastapi
 ```bash
-pip install fastapi "uvicorn[standard]"
+pip install fastapi
 ```
-### psql
+### uvicorn[standard]
+```bash
+pip install "uvicorn[standard]"
+```
+
+### tabulate
+```bash
+pip install tabulate
+```
+
+### psql (optional)
 
 for windows: <br>
 go to [official website of PostgreSQL][PSQL_link] and install the version 18.1 for windows

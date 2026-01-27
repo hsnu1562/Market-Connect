@@ -40,6 +40,7 @@ CREATE TABLE IF NOT EXISTS bookings (
     slot_id INTEGER REFERENCES slots(slot_id), -- Foreign Key
     user_id INTEGER REFERENCES users(user_id),       -- Foreign Key
     payment_status VARCHAR(20) DEFAULT 'PENDING',
+    payment_method VARCHAR(50),
     qr_token VARCHAR(100),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
