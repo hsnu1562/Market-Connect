@@ -80,7 +80,7 @@ def create_stall( request: CreateStallRequest, conn = Depends(get_db_connection)
 
 class DeleteStallRequest(BaseModel):
     stall_id: int
-@router.post("/delete_stall")
+@router.delete("/delete_stall")
 def delete_stall( request: DeleteStallRequest, conn = Depends(get_db_connection) ):
     """
     deletes a stall by stall_id

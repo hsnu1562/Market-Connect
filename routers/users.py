@@ -80,7 +80,7 @@ def create_user( user: CreateUserRequest, conn = Depends(get_db_connection) ):
 
 class DeleteUserRequest(BaseModel):
     user_id: int
-@router.post("/delete_user")
+@router.delete("/delete_user")
 def delete_user( request: DeleteUserRequest, conn = Depends(get_db_connection) ):
     """
     Deletes a user from the database.

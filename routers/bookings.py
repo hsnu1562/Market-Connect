@@ -46,7 +46,7 @@ def get_bookings_table(conn = Depends(get_db_connection)):
 
 class DeleteBookingRequest(BaseModel):
     booking_id: int
-@router.post("/delete_booking")
+@router.delete("/delete_booking")
 def delete_booking( request: DeleteBookingRequest, conn = Depends(get_db_connection) ):
     """
     deletes a booking by booking_id,

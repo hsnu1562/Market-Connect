@@ -82,7 +82,7 @@ def create_slot( request: CreateSlotsRequest, conn = Depends(get_db_connection) 
 
 class DeleteSlotsRequest(BaseModel):
     slot_id: int
-@router.post("/delete_slot")
+@router.delete("/delete_slot")
 def delete_slot( request: DeleteSlotsRequest, conn = Depends(get_db_connection) ):
     """
     deletes a slot by slot_id
