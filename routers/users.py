@@ -12,6 +12,9 @@ router = APIRouter()
 
 @router.get("/get_users")
 def get_users( conn = Depends(get_db_connection) ):
+    """
+    Returns a list of all users.
+    """
     try:
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM users;")
@@ -28,9 +31,7 @@ def get_users_table(conn = Depends(get_db_connection)):
     Best viewed in a browser or terminal.
     """
     try:
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM users;")
-        users = cursor.fetchall()
+        users = get_users(conn)
     
         # Check if empty to avoid errors
         if not users:
@@ -43,14 +44,15 @@ def get_users_table(conn = Depends(get_db_connection)):
         return table_content
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching users: {e}")
-    finally:
-        cursor.close()
 
 class CreateUserRequest(BaseModel):
     line_uid: str
     name: str
 @router.post("/create_user")
 def create_user( user: CreateUserRequest, conn = Depends(get_db_connection) ):
+    """
+    Creates a new user in the database.
+    """
     cursor = conn.cursor()
     try:
         cursor.execute(
@@ -80,6 +82,9 @@ class DeleteUserRequest(BaseModel):
     user_id: int
 @router.post("/delete_user")
 def delete_user( request: DeleteUserRequest, conn = Depends(get_db_connection) ):
+    """
+    Deletes a user from the database.
+    """
     cursor = conn.cursor()
     try:
         cursor.execute(

@@ -5,11 +5,16 @@
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from utils.database import get_db_connection
+from tabulate import tabulate
+from fastapi.responses import PlainTextResponse
 
 router = APIRouter()
 
 @router.get("/get_stalls")
 def get_stalls( conn = Depends(get_db_connection) ):
+    """
+    returns all stalls
+    """
     try:
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM stalls;")
@@ -19,11 +24,34 @@ def get_stalls( conn = Depends(get_db_connection) ):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching stalls: {e}")
     
+@router.get("/get_stalls/table", response_class=PlainTextResponse)
+def get_stalls_table(conn = Depends(get_db_connection)):
+    """
+    Returns a table of all stalls.
+    Best viewed in a browser or terminal.
+    """
+    try:
+        stalls = get_stalls(conn)
+    
+        # Check if empty to avoid errors
+        if not stalls:
+            return "No stalls found."
+
+        # Convert the list of dictionaries into the table format
+        table_content = tabulate(stalls, headers="keys", tablefmt="psql")
+        
+        return table_content
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching stalls: {e}")
+
 class CreateStallRequest(BaseModel):
     location_name: str
     facilities: str
 @router.post("/create_stall")
 def create_stall( request: CreateStallRequest, conn = Depends(get_db_connection) ):
+    """
+    creates a new stall by location_name and facilities
+    """
     cursor = conn.cursor()
     try:
         cursor.execute(
@@ -54,6 +82,9 @@ class DeleteStallRequest(BaseModel):
     stall_id: int
 @router.post("/delete_stall")
 def delete_stall( request: DeleteStallRequest, conn = Depends(get_db_connection) ):
+    """
+    deletes a stall by stall_id
+    """
     cursor = conn.cursor()
     try:
         cursor.execute(

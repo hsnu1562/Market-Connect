@@ -7,6 +7,9 @@ router = APIRouter()
 
 @router.get("/get_available_slots")
 def get_available_slots( conn = Depends(get_db_connection) ):
+    """
+    returns all available slots
+    """
     try:
         cursor = conn.cursor()
 
@@ -18,7 +21,7 @@ def get_available_slots( conn = Depends(get_db_connection) ):
             a.status
         FROM slots a
         JOIN stalls s ON a.stall_id = s.stall_id
-        WHERE a.status = 0;
+        WHERE a.status = 0; -- 0: Available
         """
         cursor.execute(query)
         slots = cursor.fetchall()
