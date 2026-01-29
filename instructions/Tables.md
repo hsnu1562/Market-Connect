@@ -45,5 +45,6 @@ stores the booked informations, including the slot, the user (renter), payment s
 - `slot_id`: integer, auto linked to the `slot_id` on the table `slots`.
 - `user_id`: integer, auto linked to the `user_id` on the table `user`.
 - `payment_status`: string, upto 20 characters, default as "PENDING". to track whether the money is paid
+- `payment_method`: string, upto 50 characters. the payment method of this booking.
 - `qr_token`: string, upto 100 characters. the qr code token
 - `created_at`: timestamp. the exact time the deal is made.

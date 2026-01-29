@@ -1,11 +1,20 @@
+# /get_users: Endpoint to retrieve all users
+# /create_user: Endpoint to create a new user
+# /delete_user: Endpoint to delete a user
+
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from utils.database import get_db_connection
+from tabulate import tabulate
+from fastapi.responses import PlainTextResponse
 
 router = APIRouter()
 
 @router.get("/get_users")
 def get_users( conn = Depends(get_db_connection) ):
+    """
+    Returns a list of all users.
+    """
     try:
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM users;")
@@ -14,12 +23,36 @@ def get_users( conn = Depends(get_db_connection) ):
         return users
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching users: {e}")
+
+@router.get("/get_users/table", response_class=PlainTextResponse)
+def get_users_table(conn = Depends(get_db_connection)):
+    """
+    Returns a table of all users.
+    Best viewed in a browser or terminal.
+    """
+    try:
+        users = get_users(conn)
     
+        # Check if empty to avoid errors
+        if not users:
+            return "No users found."
+
+        # Convert the list of dictionaries into the table format
+        # tablefmt="psql" gives you that specific postgres style you asked for
+        table_content = tabulate(users, headers="keys", tablefmt="psql")
+        
+        return table_content
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching users: {e}")
+
 class CreateUserRequest(BaseModel):
     line_uid: str
     name: str
 @router.post("/create_user")
 def create_user( user: CreateUserRequest, conn = Depends(get_db_connection) ):
+    """
+    Creates a new user in the database.
+    """
     cursor = conn.cursor()
     try:
         cursor.execute(
@@ -47,8 +80,11 @@ def create_user( user: CreateUserRequest, conn = Depends(get_db_connection) ):
 
 class DeleteUserRequest(BaseModel):
     user_id: int
-@router.post("/delete_user")
+@router.delete("/delete_user")
 def delete_user( request: DeleteUserRequest, conn = Depends(get_db_connection) ):
+    """
+    Deletes a user from the database.
+    """
     cursor = conn.cursor()
     try:
         cursor.execute(

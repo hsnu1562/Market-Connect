@@ -1,11 +1,20 @@
+# /get_bookings: Endpoint to retrieve all bookings
+# /delete_booking: Endpoint to delete a booking
+
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from utils.database import get_db_connection
+from tabulate import tabulate
+from fastapi.responses import PlainTextResponse
+
 
 router = APIRouter()
 
 @router.get("/get_bookings")
 def get_bookings( conn = Depends(get_db_connection) ):
+    """
+    returns all bookings
+    """
     try:
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM bookings;")
@@ -15,11 +24,34 @@ def get_bookings( conn = Depends(get_db_connection) ):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching bookings: {e}")
 
+@router.get("/get_bookings/table", response_class=PlainTextResponse)
+def get_bookings_table(conn = Depends(get_db_connection)):
+    """
+    Returns a table of all bookings.
+    Best viewed in a browser or terminal.
+    """
+    try:
+        bookings = get_bookings(conn)
+
+        # Check if empty to avoid errors
+        if not bookings:
+            return "No bookings found."
+
+        # Convert the list of dictionaries into the table format
+        table_content = tabulate(bookings, headers="keys", tablefmt="psql")
+
+        return table_content
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching bookings: {e}")
+
 class DeleteBookingRequest(BaseModel):
     booking_id: int
-@router.post("/delete_booking")
+@router.delete("/delete_booking")
 def delete_booking( request: DeleteBookingRequest, conn = Depends(get_db_connection) ):
-    # note: this only deletes the booking record, does not free up the slot
+    """
+    deletes a booking by booking_id,
+    note: this only deletes the booking record, does not free up the slot
+    """
     cursor = conn.cursor()
     try:
         cursor.execute(
