@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routers import users, stalls, slots, bookings, get_available_slots, book, pay
+from routers import users, stalls, slots, bookings, get_available_slots, book, pay, cancel_booking
 
 # Initialize the app
 app = FastAPI(
@@ -20,4 +20,5 @@ app.include_router(bookings.router)
 app.include_router(get_available_slots.router)
 app.include_router(book.router)
 app.include_router(pay.router)
+app.include_router(cancel_booking.router)
 
