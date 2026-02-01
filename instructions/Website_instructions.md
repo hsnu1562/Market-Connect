@@ -1,6 +1,6 @@
 # Website Instructions
 
-This is a intruction for web structure.
+This is an intruction for web structure.
 
 ```
 EO:Event Organizer
@@ -12,7 +12,7 @@ EO:Event Organizer
 
 **Function**: Display the logo and allow users to select whether they are a Merchant or an Event Organizer.
 
-![Welcoming Page Layout Mockup](/market-connect-api/instructions_asset/Website_instructions_picture/welcome%20page.png)
+![Welcoming Page Layout Mockup](/market-connect-api/instructions_asset/Website_instructions_picture/welcome_page.png)
 
 ### Merchant Main Page
 
